@@ -1,7 +1,7 @@
 ---
-title: Integrationstests zu legen, die in ASP.NET Core
+title: Integrationstests in ASP.NET Core
 author: ardalis
-description: "So verwenden Sie ASP.NET Core Integrationstests zu legen, um sicherzustellen, dass eine Anwendung Komponenten ordnungsgemäß funktionieren."
+description: "So verwenden Sie ASP.NET Core Integrationstests, um sicherzustellen, dass eine Komponenten einer Anwendung ordnungsgemäß funktionieren."
 keywords: ASP.NET Core, Integrationstests zu legen, Razor
 ms.author: riande
 manager: wpickett
@@ -17,74 +17,74 @@ ms.translationtype: MT
 ms.contentlocale: de-DE
 ms.lasthandoff: 11/10/2017
 ---
-# <a name="integration-testing-in-aspnet-core"></a>Integrationstests zu legen, die in ASP.NET Core
+# <a name="integration-testing-in-aspnet-core"></a>Integrationstests in ASP.NET Core
 
-Durch [Steve Smith](https://ardalis.com/)
+Von [Steve Smith](https://ardalis.com/)
 
-Integrationstests wird sichergestellt, dass eine Anwendung Komponenten ordnungsgemäß funktionieren, wenn es sich bei zusammen assembliert. ASP.NET Core unterstützt Integrationstests zu legen, mit der Komponententest-Frameworks und einem integrierten Test Webhost, der verwendet werden kann, um Mehraufwand von Netzwerk-Anforderungen zu verarbeiten.
+Durch Integrationstests wird sichergestellt, dass die Komponenten einer Anwendung ordnungsgemäß funktionieren, wenn sie zusammengefügt werden. ASP.NET Core unterstützt Integrationstests mit Hilfe des Komponententest-Frameworks und einem integrierten Test Webhost, der verwendet werden kann, um dne Mehraufwand der Netzwerk-Anforderungen zu verarbeiten.
 
 [Anzeigen oder Herunterladen von Beispielcode](https://github.com/aspnet/Docs/tree/master/aspnetcore/testing/integration-testing/sample) ([Vorgehensweise zum Herunterladen](xref:tutorials/index#how-to-download-a-sample))
 
 ## <a name="introduction-to-integration-testing"></a>Einführung in die Integrationstests
 
-Integrationstests stellen Sie sicher, dass unterschiedliche Teile einer Anwendung ordnungsgemäß zusammenarbeiten. Im Gegensatz zu [UnitTests](https://docs.microsoft.com/dotnet/articles/core/testing/unit-testing-with-dotnet-test), Integrationstests häufig Infrastruktur anwendungsaspekten, z. B. eine Datenbank, Dateisystem, Netzwerkressourcen, oder webanforderungen und-Antworten umfassen. Komponententests Fakes oder Pseudoobjekten anstelle dieser Bedenken, aber der Zweck der Integrationstests wird bestätigt, dass das System arbeitet wie erwartet mit diesen Systemen.
+Mit Integrationstests stellen Sie sicher, dass unterschiedliche Teile einer Anwendung ordnungsgemäß zusammenarbeiten. Im Gegensatz zu [UnitTests](https://docs.microsoft.com/dotnet/articles/core/testing/unit-testing-with-dotnet-test), umfassen Integrationstests häufig Infrastruktur- und Anweungdsaspekte, z. B. eine Datenbank, das Dateisystem, Netzwerkressourcen, oder Webanforderungen und-Antworten . Komponententests benutzen Fake- oder Pseudoobjekte anstelle der echten Systeme, aber der Zweck der Integrationstests ist es, zu bestätigen, dass das System wie erwartet mit diesen Systemen arbeitet.
 
-Integrationstests, tendenziell, weil sie größere Codesegmente Übung und sie von Infrastrukturelemente, abhängig sind erheblich langsamer als Komponententests. Daher ist es eine gute Idee, wie viele Integrationstests einzuschränken, dass Sie schreiben, insbesondere dann, wenn Sie das gleiche Verhalten mit einem Komponententest testen können.
-
-> [!NOTE]
-> Wenn einige Verhaltensweisen getestet werden kann, verwenden einen Komponententest oder einen Integrationstest lieber den Komponententest, da er sein werden fast immer schneller. Möglicherweise müssen Dutzende oder Hunderte von Komponententests mit vielen unterschiedlichen Eingaben jedoch nur eine Handvoll Integrationstests, die die wichtigsten Szenarien abdecken.
-
-Testen die Logik innerhalb der eigenen Methoden ist in der Regel die Domäne des Komponententests. Testen die Funktionsweise der Anwendungsstatus innerhalb seiner Frameworks, z. B. ASP.NET Core oder mit einer Datenbank ist, in denen Integrationstests sprachbasierte möglich. Es ist nicht zu viele Integrationstests, um sicherzustellen, dass eine Zeile in die Datenbank schreiben und Lesen Sie es wieder können Sie Ihre dauern. Sie müssen nicht alle möglichen Permutation der vom Datenzugriffscode zu testen – müssen Sie nur testen genug, um erhalten Sie mehr Gewissheit, die die Anwendung ordnungsgemäß funktioniert.
-
-## <a name="integration-testing-aspnet-core"></a>Integration testen ASP.NET Core
-
-Um bis zur Integrationstests zu legen zu erhalten, müssen Sie ein Testprojekt erstellen, fügen Sie einen Verweis zum Projekt Web ASP.NET Core und installieren einen Test Runner. Dieser Prozess wird beschrieben, der [UnitTests](https://docs.microsoft.com/dotnet/articles/core/testing/unit-testing-with-dotnet-test) Dokumentation sowie detaillierte Anweisungen zum Ausführen von Tests und Empfehlungen für die Benennung der Tests und Testklassen.
+Integrationstests sind, tendenziell, weil sie größere Codesegmente ausführen und abhängig von Infrastrukturelemente sind, erheblich langsamer als Komponententests. Daher ist es eine gute Idee, die Anzahl der Integrationstests zu beschränken, die Sie schreiben, insbesondere dann, wenn Sie das gleiche Verhalten mit einem Komponententest testen können.
 
 > [!NOTE]
-> Trennen Sie die Komponententests und Integrationstests mit anderen Projekten. Dadurch wird sichergestellt, dass Sie versehentlich Infrastruktur Bedenken in Komponententests einführen nicht und können Sie problemlos auswählen, welcher Satz von Tests ausführen.
+> Wenn einige Verhaltensweisen sowohl mit einem Komponententest, als auch mit einem Integrationstest getestet werden kann, verwenden sie lieber den Komponententest, da er fast immer schneller wird. Sie werden wahrscheinlich Dutzende oder Hunderte von Komponententests mit vielen unterschiedlichen Eingaben haben, jedoch nur eine Handvoll Integrationstests, die die wichtigsten Szenarien abdecken.
+
+Das Testen die Logik innerhalb der eigenen Methoden ist in der Regel der Bereich der Komponententests. Das Testen der Funktionsweise der Anwendung innerhalb seiner Frameworks, z. B. ASP.NET Core oder mit einer Datenbank, ist der Bereich in denen Integrationstests ins Spiel kommen. Es braucht nicht viele Integrationstests, um sicherzustellen, dass Sie eine Zeile in die Datenbank schreiben und wieder lesen können. Sie müssen nicht alle möglichen Permutation des Datenzugriffscodes testen – Sie müssen nur genug testen, um die Gewissheit zu erhalten, dass die Anwendung ordnungsgemäß funktioniert.
+
+## <a name="integration-testing-aspnet-core"></a>Integrationstest mit ASP.NET Core
+
+Um mit den Integrationstests zu beginnen, müssen Sie ein Testprojekt erstellen, Sie einen Verweis zum Projekt Web ASP.NET Core hinzufügen und einen Test Runner installieren. Dieser Prozess wird in der der [UnitTests](https://docs.microsoft.com/dotnet/articles/core/testing/unit-testing-with-dotnet-test) Dokumentation zusammen mit detaillierten Anweisungen zum Ausführen von Tests und Empfehlungen für die Benennung der Tests und Testklassen beschrieben.
+
+> [!NOTE]
+> Trennen Sie die Komponententests und Integrationstests, indem Sie unterschiedliche Projekte verwenden. Dadurch wird sichergestellt, dass Sie nicht versehentlich Infrastruktur-Aspekte in Komponententests einführen und dauruch können Sie problemlos auswählen, welchen Satz von Tests Sie ausführen.
 
 ### <a name="the-test-host"></a>Testhost
 
-ASP.NET Core umfasst einen Testhost, der Integration Testprojekte hinzugefügt werden kann und zum Hosten von verwendeten ASP.NET Core Anwendungen bedient Test fordert, ohne die Notwendigkeit einer echten Webhost. Das bereitgestellte Beispiel enthält ein Integrationstestprojekt die konfiguriert wurde, verwenden Sie [xUnit](https://xunit.github.io) und dem Host zu testen. Er verwendet die `Microsoft.AspNetCore.TestHost` NuGet-Paket.
+ASP.NET Core umfasst einen Testhost, der zu den Integrations-Testprojekten hinzugefügt werden kann und zum Hosten von verwendeten ASP.NET Core Anwendungen verwendeten werden kann, um Test.Anfragen ohne die Notwendigkeit einer echten Webhost zu beantworten. Das bereitgestellte Beispiel enthält ein Integrationstestprojekt das konfiguriert wurde,  [xUnit](https://xunit.github.io) und den Host zu vewenden. Er verwendet das `Microsoft.AspNetCore.TestHost` NuGet-Paket.
 
-Einmal die `Microsoft.AspNetCore.TestHost` Paket im Projekt enthalten ist, können zum Erstellen und Konfigurieren einer `TestServer` in den Tests. Der folgende Test zeigt, wie sicherzustellen, dass eine Anforderung auf den Stamm eines Standorts "Hello World!" zurückgibt und sollte ausgeführt wurde erfolgreich gegen die Standardeinstellung ASP.NET Core leere Web-Vorlage, die von Visual Studio erstellt haben.
+Sobald das `Microsoft.AspNetCore.TestHost` Paket im Projekt enthalten ist, können Sie einen TesServer in den Tests erstellen und konfigurieren. Der folgende Test zeigt, wie sicherzustellen ist, dass eine Anforderung auf das Stammverzeichnis einer Seite "Hello World!" zurückgibt und sollte erfolgreich gegen die standardmäßige ASP.NET Core leere Web-Vorlage, die von Visual Studio erstellt wurde, ausgeführt werden.
 
 [!code-csharp[Main](../testing/integration-testing/sample/test/PrimeWeb.IntegrationTests/PrimeWebDefaultRequestShould.cs?name=snippet_WebDefault&highlight=7,16,22)]
 
-Bei diesem Test wird das Anordnen Act Assert-Muster verwendet. Der Diagrammfelder Schritt erfolgt in der Konstruktor, der eine Instanz erstellt `TestServer`. Ein konfiguriertes `WebHostBuilder` verwendet werden, zum Erstellen einer `TestHost`; in diesem Beispiel die `Configure` Methode aus dem System unter dem Test (SUT) `Startup` Klasse wird zum Übergeben der `WebHostBuilder`. Diese Methode wird zum Konfigurieren der Anforderungspipeline, der die `TestServer` identisch mit der Konfiguration des Servers SUT würde.
+Bei diesem Test wird das Arrange-Act-Assert-Muster verwendet. Der Arrange Schritt erfolgt im Konstruktor, der eine `TestServer` Instanz erstellt. Ein konfigurierter `WebHostBuilder` wird zum Erstellen eines `TestHost` verwendet; in diesem Beispiel die `Configure` Methode des zu testendes Systems (`system under test`, SUT), die `Startup` Klasse wird dem `WebHostBuilder` übergeben. Diese Methode wird zum Konfigurieren der Anforderungspipeline des `TestServer`, sodass es identisch mit der Konfiguration des Servers SUT sein würde.
 
-In der Act-Teil des Tests wird eine Anforderung an die `TestServer` -Instanz für den Pfad "/" und die Antwort wird zurück in eine Zeichenfolge gelesen. Diese Zeichenfolge wird mit der erwarteten Zeichenfolge "Hello World!" verglichen. Wenn sie übereinstimmen, wird der Test erfolgreich; Andernfalls schlägt fehl.
+In der Act-Teil des Tests wird eine Anforderung an die `TestServer` -Instanz für den Pfad "/" gestellt und die Antwort wird zurück in eine Zeichenfolge gelesen. Diese Zeichenfolge wird mit der erwarteten Zeichenfolge "Hello World!" verglichen. Wenn sie übereinstimmen, wird der Test erfolgreich; Andernfalls schlägt er fehl.
 
-Jetzt können Sie einige zusätzliche Integrationstests, um sicherzustellen, dass es sich bei der es sich um Primzahlen Prüfen der Funktionalität über die Webanwendung funktioniert hinzufügen:
+Jetzt können Sie einige zusätzliche Integrationstests hinzufügen, um sicherzustellen, dass die Primzahlen-Prüfen Funktionalität der Webanwendung funktioniert:
 
 [!code-csharp[Main](../testing/integration-testing/sample/test/PrimeWeb.IntegrationTests/PrimeWebCheckPrimeShould.cs?name=snippet_CheckPrime)]
 
-Beachten Sie, dass Sie nicht wirklich versuchen So testen Sie die Richtigkeit von Primzahl Checker mit diesen Tests jedoch statt Erwartungen die Webanwendung ausführt. Sie haben bereits Coverage für Komponententests, die Ihnen vertrauen, in sofortigen `PrimeService`, wie Sie hier sehen können:
+Beachten Sie, dass Sie mit diesen Tests nicht wirklich versuchen, die Richtigkeit von Primzahl Checker zu testen, vielmehr jedoch ob, die Webanwendung das tut, was Sie erwarten. Sie haben bereits Test-Coverage für Komponententests,  das Ihnen Vertrauen für `PrimeService` geben kann, wie Sie hier sehen können:
 
 ![Test-Explorer](integration-testing/_static/test-explorer.png)
 
-Weitere Informationen finden Sie Informationen zu den Komponententests in der [UnitTests](https://docs.microsoft.com/dotnet/articles/core/testing/unit-testing-with-dotnet-test) Artikel.
+Weitere Informationen finden Sie in den Informationen zu den Komponententests in dem [UnitTests](https://docs.microsoft.com/dotnet/articles/core/testing/unit-testing-with-dotnet-test) Artikel.
 
 
-### <a name="integration-testing-mvcrazor"></a>Integrationstests zu legen, Mvc Razor /
+### <a name="integration-testing-mvcrazor"></a>Integrationstests für MVC/Razor
 
-Testprojekte, die Razor-Ansichten enthalten erfordern `<PreserveCompilationContext>` festgelegt werden, um "true" in der *csproj* Datei:
+Testprojekte, die Razor-Ansichten enthalten, erfordern, dass `<PreserveCompilationContext>` auf true festgelegt wird, in der *csproj* Datei:
 
 
 ```xml
     <PreserveCompilationContext>true</PreserveCompilationContext>
 ```
 
-Projekte, die dieses Element fehlt, werden eine Fehlermeldung ähnlich der folgenden generiert:
+Projekte, denen dieses Element fehlt, werden eine Fehlermeldung ähnlich der folgenden generieren:
 ```
 Microsoft.AspNetCore.Mvc.Razor.Compilation.CompilationFailedException: 'One or more compilation failures occurred:
 ooebhccx.1bd(4,62): error CS0012: The type 'Attribute' is defined in an assembly that is not referenced. You must add a reference to assembly 'netstandard, Version=2.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51'.
 ```
 
 
-## <a name="refactoring-to-use-middleware"></a>Umgestaltung Middleware verwenden
+## <a name="refactoring-to-use-middleware"></a>Refactoring, um Middleware zu verwenden
 
-Umgestaltung versteht man das Ändern einer Anwendung Code aus, um den Entwurf zu verbessern, ohne dessen Verhalten zu ändern. Es sollte idealerweise ausgeführt werden, wenn es eine Sammlung ist von Tests, übergeben, da diese Hilfe stellen Sie sicher, dass das System Verhalten vor und nach der Änderung des unverändert. Betrachten die Möglichkeit, die in der die Logik überprüft es sich um Primzahlen wird in der Web-Anwendungsverzeichnis implementiert `Configure` Methode finden Sie unter:
+Unter Refactoring versteht man das Ändern des Codes einer Anwendung, um ihren Entwurf zu verbessern, ohne dessen Verhalten zu ändern. Es sollte idealerweise ausgeführt werden, wenn es eine Sammlung von erfolgreichen Tests gibt, da Sie mit dieser Hilfe sicherstellen können, dass das Verhalten des Systems vor und nach der Änderung unverändert ist. Beim Betrachten der Implementierung, die in dieser Webanwendung `Configure`-Methode zum Überprüfen von Primzahlen verwendet wird, sehen Sie:
 
 ```csharp
 public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -125,29 +125,29 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment env)
 }
 ```
 
-Dieser Code funktioniert allerdings handelt es sich zurückgelegt wie möchten Sie diese Art von Funktion implementieren, in einer ASP.NET Core-Anwendung auch so einfach, weil es sich handelt. Angenommen, was die `Configure` Methode würde wie folgt aussehen, ggf. viel Code hinzugefügt, jedes Mal, wenn Sie einen anderen URL-Endpunkt hinzufügen.
+Dieser Code funktioniert, allerdings ist er weit davon entfernt, wie Sie diese Art von Funktionalität in einer ASP.NET Core umsetzen würden, sei sie noch so simpel. Stellen Sie sich vor, wie die `Configure` Methode aussehen würde, wenn jedes Mal so viel Code hinzugefügt werden müsste, wenn Sie einen anderen URL-Endpunkt hinzufügen.
 
-Eine Option zu berücksichtigen ist das Hinzufügen von [MVC](xref:mvc/overview) an der Anwendung und Erstellen eines Domänencontrollers, auf die wesentlichen Überprüfung behandeln. Allerdings muss die vorausgesetzt, dass Sie derzeit keine anderen MVC Funktionalität, einem bit overkill.
+Eine Option wäre das Hinzufügen von [MVC](xref:mvc/overview) zu Anwendung und Erstellen eines Controllers, um auf Primzahlen zu überprüfen. Allerdings wäre das, vorausgesetzt, dass Sie derzeit keine anderen MVC Funktionalität verwenden, ein wenig übertrieben.
 
-Sie können jedoch von ASP.NET Core profitieren [Middleware](xref:fundamentals/middleware), die hilft uns zu kapseln die Primzahlen Logik in eine eigene Klasse wird überprüft und eine bessere Leistung erzielen [Trennung von Anliegen](http://deviq.com/separation-of-concerns/) in der `Configure` Methode.
+Sie können jedoch von ASP.NET Core [Middleware](xref:fundamentals/middleware) profitieren, die uns hilft, die Primzahl-Überprüf-Logik in eine Klasse zu kapseln und so eine bessere [Trennung von Anliegen](http://deviq.com/separation-of-concerns/) in der `Configure` Methode zu erzielen.
 
-Der Pfad darf die Middleware verwendet als Parameter angegeben werden, damit die Middleware-Klasse erwartet werden sollen eine `RequestDelegate` und eine `PrimeCheckerOptions` Instanz in seinem Konstruktor. Wenn der Pfad der Anforderung nicht übereinstimmt, was diese Middleware ist so konfiguriert, dass Sie davon ausgehen dass, Sie einfach die nächste Middleware in der Kette aufrufen und keine weiteren Aktionen. Der Rest des Codes Implementierung, die im war `Configure` ist jetzt der `Invoke` Methode.
+Sie müssen es dazu ermöglichen, dass der Pfad, den die Middleware verwendet, als Parameter angegeben werden kann, d.h. die Middleware-Klasse erwartet eine `RequestDelegate` und eine `PrimeCheckerOptions` Instanz in seinem Konstruktor. Wenn der Pfad der Anforderung nicht mit dem übereinstimmt, mit dem diese Middleware konfiguriert ist, rufen Sie einfach die nächste Middleware in der Kette auf und unternehmen keine weiteren Aktionen. Der Rest der Code Implementierung, die vorher in `Configure` war, ist jetzt der `Invoke` Methode.
 
 > [!NOTE]
-> Da die Middleware hängt die `PrimeService` Service, Sie können auch eine Instanz dieses Diensts mit dem Konstruktor anfordern. Das Framework bietet dieser Dienst über [Abhängigkeitsinjektion](xref:fundamentals/dependency-injection), sofern es konfiguriert wurde, z. B. in `ConfigureServices`.
+> Da die Middleware vome `PrimeService` Service abhängt, fordern Sie auch eine Instanz dieses Diensts mit dem Konstruktor an. Das Framework bietet diesen Dienst über [Abhängigkeitsinjektion](xref:fundamentals/dependency-injection) an, sofern es konfiguriert wurde, z. B. in `ConfigureServices`.
 
 [!code-csharp[Main](../testing/integration-testing/sample/src/PrimeWeb/Middleware/PrimeCheckerMiddleware.cs?highlight=39-63)]
 
-Da diese Middleware fungiert als Endpunkt in der Anforderung Delegatenkette auf, wenn ihr Pfad übereinstimmt, wird es nicht aufgerufen, `_next.Invoke` Wenn diese Middleware verarbeitet die Anforderung.
+Da diese Middleware als Endpunkt in der Anforderungs-Delegierungskette fungiert, wenn ihr Pfad übereinstimmt, wird `_next.Invoke` nicht aufgerufen, wenn diese Middleware die Anforderung verarbeitet.
 
-Mit diesem Middleware eingesetzt sind und einige nützliche Erweiterungsmethoden erstellt, um die Lesbarkeit zu konfigurieren, die umgestalteten `Configure` -Methode sieht folgendermaßen aus:
+Mit dem Einsatz dieser Middleware und dem Erstellen einiger nützliche Erweiterungsmethoden, um die Konfiguration zu erleichtern, sieht die umgestaltete `Configure` -Methode folgendermaßen aus:
 
 [!code-csharp[Main](../testing/integration-testing/sample/src/PrimeWeb/Startup.cs?highlight=9&range=19-33)]
 
-Folgende dieses refactoring sind Sie sicher, dass die Webanwendung weiterhin wie zuvor funktioniert, da die Integrationstests erfolgreich alle übergeben werden.
+Nach diesem Refactoring sind Sie sicher, dass die Webanwendung weiterhin wie zuvor funktioniert, da die Integrationstests weiterhin erfolgreich sind.
 
 > [!NOTE]
-> Es ist eine gute Idee, übertragen Sie die Änderungen zur quellcodeverwaltung, nachdem Sie eine Umgestaltung abschließen und die Tests bestanden. Wenn Sie die testgesteuerte Entwicklung, üben sind [erwägen der Commit für die Red-Green-Refactor Zyklus](https://ardalis.com/rgrc-is-the-new-red-green-refactor-for-test-first-development).
+> Es ist eine gute Idee, die Änderungen zur Quellcodeverwaltung zu übertragen, nachdem Sie eine Umgestaltung abschließen und die Tests bestanden werden. Wenn Sie testgesteuert entwickeln, erwägen Sie, den Commit dem [Red-Green-Refactor Zyklus](https://ardalis.com/rgrc-is-the-new-red-green-refactor-for-test-first-development) hinzuzufügen.
 
 ## <a name="resources"></a>Ressourcen
 
